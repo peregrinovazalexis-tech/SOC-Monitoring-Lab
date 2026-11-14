@@ -59,13 +59,19 @@ def contar_ips(ruta_archivo):
 
     return contador_ips
 
-
+def detectar_amenazas(datos):
+    alertas=[]
+    if datos["intentos_fallidos"] >= 5:
+        alertas.append("Alerta: Múltiples intentos fallidos de inicio de sesión detectados.")
+    return alertas
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 ruta = BASE_DIR / "data" / "auth.log"
 
 resultado = analizar_registros(ruta)
 ips_encontradas = contar_ips(ruta)
+datos = analizar_registros(ruta)
+alertas = detectar_amenazas(datos)
 
 print("\nREPORTE DE SEGURIDAD")
 print("--------------------")
@@ -77,3 +83,7 @@ for evento, cantidad in resultado.items():
 print("\nEventos por dirección IP:")
 for ip, cantidad in ips_encontradas.items():
     print(f"IP: {ip} | Eventos: {cantidad}")
+
+print("\nAlertas:")
+for alerta in alertas:
+    print(alerta)
